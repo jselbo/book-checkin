@@ -22,6 +22,10 @@ def register():
 def login():
   return render_template('login.html')
 
+@app.route('/checkin')
+def checkin():
+  return render_template('checkin.html')
+
 @app.route('/do_sign_up', methods=['POST'])
 def do_sign_up():
   name = request.form['inputName']
