@@ -1,6 +1,6 @@
 -- MySQL dump 10.15  Distrib 10.0.24-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: test
+-- Host: localhost    Database: checkin
 -- ------------------------------------------------------
 -- Server version	10.0.24-MariaDB-7
 
@@ -16,17 +16,91 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `TestTable`
+-- Table structure for table `Book`
 --
 
-DROP TABLE IF EXISTS `TestTable`;
+DROP TABLE IF EXISTS `Book`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `TestTable` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `Book` (
+  `BookID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `BookRecordID` bigint(20) NOT NULL,
+  `TeacherID` bigint(20) NOT NULL,
+  PRIMARY KEY (`BookID`),
+  KEY `BookRecordID` (`BookRecordID`),
+  KEY `TeacherID` (`TeacherID`),
+  CONSTRAINT `Book_ibfk_1` FOREIGN KEY (`BookRecordID`) REFERENCES `BookRecord` (`BookRecordID`) ON DELETE CASCADE,
+  CONSTRAINT `Book_ibfk_2` FOREIGN KEY (`TeacherID`) REFERENCES `Teacher` (`TeacherID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `BookRecord`
+--
+
+DROP TABLE IF EXISTS `BookRecord`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `BookRecord` (
+  `BookRecordID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `Title` varchar(512) NOT NULL,
+  `Author` varchar(256) DEFAULT NULL,
+  `ISBN` char(13) DEFAULT NULL,
+  `ARPoints` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`BookRecordID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `BorrowAction`
+--
+
+DROP TABLE IF EXISTS `BorrowAction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `BorrowAction` (
+  `BorrowActionID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `StudentID` bigint(20) NOT NULL,
+  `CheckoutTime` datetime DEFAULT NULL,
+  `ReturnTime` datetime DEFAULT NULL,
+  `BookID` bigint(20) NOT NULL,
+  PRIMARY KEY (`BorrowActionID`),
+  KEY `BookID` (`BookID`),
+  CONSTRAINT `BorrowAction_ibfk_1` FOREIGN KEY (`BookID`) REFERENCES `Book` (`BookID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Student`
+--
+
+DROP TABLE IF EXISTS `Student`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Student` (
+  `StudentID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `Username` varchar(10) NOT NULL,
+  `TeacherID` bigint(20) NOT NULL,
+  PRIMARY KEY (`StudentID`),
+  KEY `TeacherID` (`TeacherID`),
+  CONSTRAINT `Student_ibfk_1` FOREIGN KEY (`TeacherID`) REFERENCES `Teacher` (`TeacherID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Teacher`
+--
+
+DROP TABLE IF EXISTS `Teacher`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Teacher` (
+  `TeacherID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `Username` varchar(10) NOT NULL,
+  `Password` char(60) NOT NULL,
+  `Email` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`TeacherID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -38,4 +112,4 @@ CREATE TABLE `TestTable` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-24  0:16:37
+-- Dump completed on 2016-05-25 18:09:24
