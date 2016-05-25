@@ -14,13 +14,13 @@ mysql = MySQL(app)
 def home():
   return render_template('home.html')
 
-@app.route('/sign_up')
-def sign_up():
-  return render_template('signup.html')
+@app.route('/register')
+def register():
+  return render_template('register.html')
 
-@app.route('/about')
-def about():
-  return render_template('about.html')
+@app.route('/login')
+def login():
+  return render_template('login.html')
 
 @app.route('/do_sign_up', methods=['POST'])
 def do_sign_up():
