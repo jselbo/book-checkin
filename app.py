@@ -26,20 +26,26 @@ def login():
 def checkin():
   return render_template('checkin.html')
 
-@app.route('/do_sign_up', methods=['POST'])
+@app.route('/do_register', methods=['POST'])
 def do_sign_up():
-  name = request.form['inputName']
-  email = request.form['inputEmail']
+  username = request.form['inputName']
   password = request.form['inputPassword']
+  email = request.form['inputEmail']
 
-  if name and email and password:
-    cursor = mysql.connection.cursor()
-    cursor.execute('''SELECT * FROM TestTable''')
-    rows = cursor.fetchall()
+  # Validate fields
+  errors = {}
+  if not username:
+    errors['inputName'] = 'Please enter a username'
+  if not password:
+    errors['inputPassword'] = 'Please enter a password'
+  if errors:
+    return json.dumps({'errors': errors})
 
-    return json.dumps({'html': '<span>{}</span>'.format(rows)})
-  else:
-    return json.dumps({'html': '<span>Enter all fields please</span>'})
+  cursor = mysql.connection.cursor()
+  cursor.execute('''SELECT * FROM TestTable''')
+  rows = cursor.fetchall()
+
+  return json.dumps({'html': '<span>{}</span>'.format(rows)})
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', debug=True)
