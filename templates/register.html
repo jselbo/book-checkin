@@ -22,6 +22,17 @@
         <span class="help-block"></span>
       </div>
       <div class="form-group">
+        <label for="inputTitle" class="sr-only">Title</label>
+        <select name="inputTitle" class="form-control">
+          <option value="mr">Mr.</option>
+          <option value="mrs">Mrs.</option>
+          <option value="ms">Ms.</option>
+        </select>
+        <label for="inputLastName" class="sr-only">Last Name</label>
+        <input type="name" name="inputLastName" id="inputLastName" class="form-control" placeholder="Last Name" required>
+        <span class="help-block"></span>
+      </div>
+      <div class="form-group">
         <label for="inputEmail" class="sr-only">Email address</label>
         <input type="email" name="inputEmail" id="inputEmail" class="form-control" placeholder="Email address (optional)" autofocus>
         <span class="help-block"></span>
@@ -63,15 +74,15 @@
                 registerButton.removeAttr('disabled');
               });
             } else {
-              $('#failureAlert')
-                .css('display', '')
-                .text('We could not register you at this time.')
-
-              registerButton.removeAttr('disabled');
+              window.location.href = '/';
             }
           },
           error: function(error) {
-            console.log(error);
+            $('#failureAlert')
+              .css('display', '')
+              .text('We could not register you at this time.')
+
+            registerButton.removeAttr('disabled');
           }
         });
       });
