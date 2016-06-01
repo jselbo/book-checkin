@@ -99,8 +99,11 @@ CREATE TABLE `Teacher` (
   `Username` varchar(10) NOT NULL,
   `Password` char(60) NOT NULL,
   `Email` varchar(256) DEFAULT NULL,
-  PRIMARY KEY (`TeacherID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `Title` char(5) DEFAULT NULL,
+  `LastName` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`TeacherID`),
+  UNIQUE KEY `Username` (`Username`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -112,4 +115,4 @@ CREATE TABLE `Teacher` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-25 18:09:24
+-- Dump completed on 2016-06-01 15:52:10
