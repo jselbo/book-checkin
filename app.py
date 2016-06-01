@@ -25,6 +25,9 @@ def login():
 @app.route('/checkin')
 def checkin():
   return render_template('checkin.html')
+@app.route('/homeloggedin')
+def home_loggedin():
+  return  render_template('home_loggedin.html')
 
 @app.route('/do_register', methods=['POST'])
 def do_sign_up():
