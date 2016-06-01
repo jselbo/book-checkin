@@ -30,6 +30,8 @@ def checkin():
 def do_sign_up():
   username = request.form['inputName']
   password = request.form['inputPassword']
+  title = request.form['inputTitle']
+  lastName = request.form['inputLastName']
   email = request.form['inputEmail']
 
   # Validate fields
@@ -38,14 +40,22 @@ def do_sign_up():
     errors['inputName'] = 'Please enter a username'
   if not password:
     errors['inputPassword'] = 'Please enter a password'
+  if not lastName:
+    errors['inputLastName'] = 'Please enter your last name'
   if errors:
     return json.dumps({'errors': errors})
 
   cursor = mysql.connection.cursor()
-  cursor.execute('''SELECT * FROM TestTable''')
-  rows = cursor.fetchall()
 
-  return json.dumps({'html': '<span>{}</span>'.format(rows)})
+  register_stmt = '''
+    INSERT INTO Teacher (Username, Password, Email, Title, LastName)
+    VALUES (%s, %s, %s, %s, %s)
+  '''
+  register_data = (username, password, email, title, lastName)
+  cursor.execute(register_stmt, register_data)
+  mysql.connection.commit()
+
+  return json.dumps({}), 200
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', debug=True)
