@@ -54,6 +54,16 @@
 </nav>
 
 <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     {% block heading %}
     {% endblock %}
     <br />
@@ -62,7 +72,7 @@
     <br />
     <footer class="footer">
         {% block footer %}
-        <p class="text-muted">Made by Jacob Selbo & Joshua Selbo</p>
+        <p class="text-muted">Made by Jacob Selbo &amp; Joshua Selbo</p>
         {% endblock %}
 </div>
 </div>

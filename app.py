@@ -1,4 +1,5 @@
 from flask import Flask, \
+  flash, \
   json, \
   redirect, \
   render_template, \
@@ -18,6 +19,11 @@ app.config['MYSQL_HOST'] = 'localhost'
 mysql = MySQL(app)
 
 TEACHER_ID_KEY = 'teacherID'
+
+FLASH_SUCCESS = 'success'
+FLASH_INFO = 'info'
+FLASH_WARNING = 'warning'
+FLASH_DANGER = 'danger'
 
 @app.route('/')
 def home():
@@ -81,6 +87,7 @@ def do_sign_up():
   # Enter session
   session[TEACHER_ID_KEY] = newTeacherID
 
+  flash('Your account has been registered', FLASH_SUCCESS)
   return json.dumps({}), 200
 
 @app.route('/do_sign_in', methods=['POST'])
@@ -119,11 +126,14 @@ def do_sign_in():
   # Enter session
   session[TEACHER_ID_KEY] = loggedInTeacherID
 
+  flash('You have successfully logged in', FLASH_SUCCESS)
   return json.dumps({}), 200
 
 @app.route('/do_logout')
 def do_logout():
   session.pop(TEACHER_ID_KEY, None)
+
+  flash('You have been logged out', FLASH_SUCCESS)
   return redirect('/')
 
 if __name__ == '__main__':
