@@ -101,6 +101,7 @@ CREATE TABLE `Teacher` (
   `Email` varchar(256) DEFAULT NULL,
   `Title` char(5) DEFAULT NULL,
   `LastName` varchar(64) DEFAULT NULL,
+  `Verified` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`TeacherID`),
   UNIQUE KEY `Username` (`Username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
@@ -115,4 +116,4 @@ CREATE TABLE `Teacher` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-01 15:52:10
+-- Dump completed on 2016-06-03  1:40:01
