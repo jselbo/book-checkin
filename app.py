@@ -1,5 +1,12 @@
-from flask import *
+from flask import Flask, \
+  json, \
+  redirect, \
+  render_template, \
+  request, \
+  session
 from flask.ext.mysqldb import MySQL
+from werkzeug.security import generate_password_hash, \
+  check_password_hash
 
 app = Flask(__name__)
 
@@ -10,9 +17,14 @@ app.config['MYSQL_HOST'] = 'localhost'
 
 mysql = MySQL(app)
 
+TEACHER_ID_KEY = 'teacherID'
+
 @app.route('/')
 def home():
-  return render_template('home.html')
+  if TEACHER_ID_KEY in session:
+    return render_template('home_loggedin.html', teacherID=session[TEACHER_ID_KEY])
+  else:
+    return render_template('home.html')
 
 @app.route('/register')
 def register():
@@ -25,9 +37,6 @@ def login():
 @app.route('/checkin')
 def checkin():
   return render_template('checkin.html')
-@app.route('/homeloggedin')
-def home_loggedin():
-  return  render_template('home_loggedin.html')
 
 @app.route('/do_register', methods=['POST'])
 def do_sign_up():
@@ -41,24 +50,84 @@ def do_sign_up():
   errors = {}
   if not username:
     errors['inputName'] = 'Please enter a username'
+  else:
+    cursor = mysql.connection.cursor()
+    cursor.execute('''
+      SELECT COUNT(*) FROM Teacher WHERE Username = %s
+    ''', (username,))
+    if cursor.fetchone()[0] > 0:
+      errors['inputName'] = 'This username already exists; please choose another username'
   if not password:
     errors['inputPassword'] = 'Please enter a password'
   if not lastName:
     errors['inputLastName'] = 'Please enter your last name'
+
   if errors:
     return json.dumps({'errors': errors})
 
-  cursor = mysql.connection.cursor()
+  # Hash, salt password
+  password = generate_password_hash(password)
 
+  # Insert account
   register_stmt = '''
     INSERT INTO Teacher (Username, Password, Email, Title, LastName)
     VALUES (%s, %s, %s, %s, %s)
   '''
   register_data = (username, password, email, title, lastName)
   cursor.execute(register_stmt, register_data)
+  newTeacherID = cursor.lastrowid
   mysql.connection.commit()
+
+  # Enter session
+  session[TEACHER_ID_KEY] = newTeacherID
 
   return json.dumps({}), 200
 
+@app.route('/do_sign_in', methods=['POST'])
+def do_sign_in():
+  username = request.form['inputName']
+  password = request.form['inputPassword']
+
+  loggedInTeacherID = -1
+
+  # Validate fields
+  errors = {}
+  if not username:
+    errors['inputName'] = 'Please enter a username'
+  if not password:
+    errors['inputPassword'] = 'Please enter a password'
+
+  if username and password:
+    cursor = mysql.connection.cursor()
+    cursor.execute('''
+      SELECT TeacherID, Password FROM Teacher WHERE Username = %s
+    ''', (username,))
+    result = cursor.fetchone()
+
+    if result is None:
+      errors['inputName'] = 'No user found'
+    else:
+      stored_password = result[1].encode('utf8')
+      if check_password_hash(stored_password, password):
+        loggedInTeacherID = result[0]
+      else:
+        errors['inputPassword'] = 'Incorrect password'
+
+  if errors:
+    return json.dumps({'errors': errors})
+
+  # Enter session
+  session[TEACHER_ID_KEY] = loggedInTeacherID
+
+  return json.dumps({}), 200
+
+@app.route('/do_logout')
+def do_logout():
+  session.pop(TEACHER_ID_KEY, None)
+  return redirect('/')
+
 if __name__ == '__main__':
+  # Secret key for development only. Not used in production.
+  app.secret_key = '\xb7\xde\xfe\x86?\xbd\xb8\xa2\xder\xfb\xe9\xa4\xa1%bw\xde\xd6\xc4\x04l\x9eo'
+
   app.run(host='0.0.0.0', debug=True)
