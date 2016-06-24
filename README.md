@@ -6,7 +6,7 @@
 sudo apt-get install python-dev
 sudo apt-get install mariadb-server
 sudo apt-get install mariadbclient-dev
-/usr/bin/mysql_secure_installation
+sudo /usr/bin/mysql_secure_installation
 ```
 
 ### Configure database
