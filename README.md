@@ -11,8 +11,9 @@ sudo /usr/bin/mysql_secure_installation
 
 ### Configure database
 ```
-mysql -u root -p -h localhost checkin < db/database.sql
-mysql -u root -p -h localhost --execute "GRANT ALL PRIVILEGES ON checkin.* TO 'checkin'@'localhost' IDENTIFIED BY 'checkinpass'"
+sudo mysql -u root -p -h localhost --execute "CREATE DATABASE checkin"
+sudo mysql -u root -p -h localhost checkin < db/database.sql
+sudo mysql -u root -p -h localhost --execute "GRANT ALL PRIVILEGES ON checkin.* TO 'checkin'@'localhost' IDENTIFIED BY 'checkinpass'"
 ```
 
 ### Install virtualenv
