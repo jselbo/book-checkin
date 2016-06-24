@@ -5,7 +5,7 @@
 ```
 sudo apt-get install python-dev
 sudo apt-get install mariadb-server
-sudo apt-get install mariadbclient-dev
+sudo apt-get install libmysqlclient-dev
 sudo /usr/bin/mysql_secure_installation
 ```
 
