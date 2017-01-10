@@ -28,29 +28,31 @@ FLASH_INFO = 'info'
 FLASH_WARNING = 'warning'
 FLASH_DANGER = 'danger'
 
+APP_ROOT = '/checkin'
+
 def logged_in():
   return TEACHER_ID_KEY in session
 
-@app.route('/')
+@app.route(APP_ROOT)
 def home():
   if logged_in():
     return render_template('home_loggedin.html', teacherID=session[TEACHER_ID_KEY])
   else:
     return render_template('home.html')
 
-@app.route('/register')
+@app.route(APP_ROOT + '/register')
 def register():
   return render_template('register.html')
 
-@app.route('/login')
+@app.route(APP_ROOT + '/login')
 def login():
   return render_template('login.html')
 
-@app.route('/checkin')
+@app.route(APP_ROOT + '/checkin')
 def checkin():
   return render_template('checkin.html')
 
-@app.route('/do_register', methods=['POST'])
+@app.route(APP_ROOT + '/do_register', methods=['POST'])
 def do_sign_up():
   username = request.form['inputName']
   password = request.form['inputPassword']
@@ -96,7 +98,7 @@ def do_sign_up():
   flash('Your account has been registered', FLASH_SUCCESS)
   return json.dumps({}), 200
 
-@app.route('/do_sign_in', methods=['POST'])
+@app.route(APP_ROOT + '/do_sign_in', methods=['POST'])
 def do_sign_in():
   username = request.form['inputName']
   password = request.form['inputPassword']
@@ -135,19 +137,19 @@ def do_sign_in():
   flash('You have successfully logged in', FLASH_SUCCESS)
   return json.dumps({}), 200
 
-@app.route('/do_logout')
+@app.route(APP_ROOT + '/do_logout')
 def do_logout():
   session.pop(TEACHER_ID_KEY, None)
 
   flash('You have been logged out', FLASH_SUCCESS)
   return redirect('/')
 
-@app.route('/books')
+@app.route(APP_ROOT + '/books')
 def book_list():
   book_records = BookRecord.fetchAll(mysql)
   return render_template('books.html', book_records=book_records)
 
-@app.route('/books/<int:book_identifier>/')
+@app.route(APP_ROOT + '/books/<int:book_identifier>/')
 def book(book_identifier):
   book_record = BookRecord.fetchFromIdentifier(mysql, book_identifier)
   return render_template('book.html', book_record=book_record)
