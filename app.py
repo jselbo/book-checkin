@@ -5,9 +5,12 @@ from flask import Flask, \
   render_template, \
   request, \
   session
-from flask.ext.mysqldb import MySQL
+from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, \
   check_password_hash
+
+from Book import Book
+from BookRecord import BookRecord
 
 app = Flask(__name__)
 
@@ -25,9 +28,12 @@ FLASH_INFO = 'info'
 FLASH_WARNING = 'warning'
 FLASH_DANGER = 'danger'
 
+def logged_in():
+  return TEACHER_ID_KEY in session
+
 @app.route('/')
 def home():
-  if TEACHER_ID_KEY in session:
+  if logged_in():
     return render_template('home_loggedin.html', teacherID=session[TEACHER_ID_KEY])
   else:
     return render_template('home.html')
@@ -135,6 +141,16 @@ def do_logout():
 
   flash('You have been logged out', FLASH_SUCCESS)
   return redirect('/')
+
+@app.route('/books')
+def book_list():
+  book_records = BookRecord.fetchAll(mysql)
+  return render_template('books.html', book_records=book_records)
+
+@app.route('/books/<int:book_identifier>/')
+def book(book_identifier):
+  book_record = BookRecord.fetchFromIdentifier(mysql, book_identifier)
+  return render_template('book.html', book_record=book_record)
 
 if __name__ == '__main__':
   # Secret key for development only. Not used in production.

@@ -1,0 +1,39 @@
+{% extends "layout_loggedin.html" %}
+
+{% block title %}Books{% endblock %}
+
+{% block css %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+  <table class="table table-hover table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Author</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book_record in book_records %}
+        <tr>
+          <td>{{ book_record.identifier }}</td>
+          <td><span class="book-title">{{ book_record.title }}</span></td>
+          <td><span class="book-author">{{ book_record.author }}</span></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+
+  <script type="text/javascript">
+  $('.table > tbody > tr').click(function() {
+    var identifier = parseInt($(this.cells[0]).text().trim());
+    window.location.href = '/books/' + identifier
+  })
+  </script>
+{% endblock %}
